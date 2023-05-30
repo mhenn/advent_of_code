@@ -6,7 +6,7 @@ struct Rucksack {
 }
 
 fn get_data<'a>() -> Vec<&'a str> {
-    let data: &str = include_str!("./res/input.txt");
+    let data: &str = include_str!("./res/test.txt");
     data.split("\n").collect()
 }
 
@@ -38,6 +38,11 @@ fn get_common_symbol(rucksack: &Rucksack) -> Option<char> {
     return_symbol
 }
 
+fn get_common_group_symbol(group: (String, String, String)) -> Option<char> {
+    let mut return_symbol: Option<char> = None;
+    return_symbol
+}
+
 fn symbol_to_priority(symbol: char) -> u32 {
     let value = symbol as u32;
     if symbol.is_uppercase() {
@@ -47,8 +52,7 @@ fn symbol_to_priority(symbol: char) -> u32 {
     }
 }
 
-fn main() {
-    let content = get_data();
+fn part_a(content: Vec<&str>) -> u32 {
     let partitioned_rucksacks: Vec<Rucksack> =
         content.into_iter().map(|x| partition_content(x)).collect();
     let symbols: Vec<char> = partitioned_rucksacks
@@ -56,6 +60,11 @@ fn main() {
         .map(|x| get_common_symbol(x))
         .flatten()
         .collect();
-    let prio: u32 = symbols.iter().map(|&x| symbol_to_priority(x)).sum();
+    symbols.iter().map(|&x| symbol_to_priority(x)).sum()
+}
+
+fn main() {
+    let content = get_data();
+    //let prio: u32 = part_a(content);
     println!("{}", prio);
 }
