@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 struct Rucksack {
     left: String,
@@ -6,7 +6,7 @@ struct Rucksack {
 }
 
 fn get_data<'a>() -> Vec<&'a str> {
-    let data: &str = include_str!("./res/test.txt");
+    let data: &str = include_str!("./res/input.txt");
     data.split("\n").collect()
 }
 
@@ -63,8 +63,42 @@ fn part_a(content: Vec<&str>) -> u32 {
     symbols.iter().map(|&x| symbol_to_priority(x)).sum()
 }
 
+fn get_common_symbol_b(list: &Vec<HashSet<char>>) -> Option<char> {
+    let mut common: HashMap<char, u8> = HashMap::new();
+    let mut return_symbol: Option<char> = None;
+    // Oh boi, that is some batshit right here. So much for nevernesting
+    for entry in list.iter() {
+        for c in entry {
+            if common.contains_key(c) {
+                common.insert(*c, common[c] + 1);
+                if common[c] == 3 {
+                    return_symbol = Some(*c);
+                    break;
+                }
+            } else {
+                common.insert(*c, 1);
+            }
+        }
+    }
+    return_symbol
+}
+
+fn part_b(content: Vec<&str>) -> u32 {
+    let partition_content: Vec<HashSet<char>> =
+        content.iter().map(|x| x.chars().collect()).collect();
+    let chunky: Vec<Vec<HashSet<char>>> = partition_content.chunks(3).map(|x| x.to_vec()).collect();
+    let ret: Vec<char> = chunky
+        .iter()
+        .map(|x| get_common_symbol_b(x))
+        .flatten()
+        .collect();
+    let prios: Vec<u32> = ret.iter().map(|&x| symbol_to_priority(x)).collect();
+    prios.iter().sum()
+}
+
 fn main() {
     let content = get_data();
+    let prio = part_b(content);
     //let prio: u32 = part_a(content);
-    println!("{}", prio);
+    println!("{}", prio)
 }
