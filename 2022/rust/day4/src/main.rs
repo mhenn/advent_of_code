@@ -31,12 +31,19 @@ fn check_ranges(ranges: &(RangeInclusive<i32>, RangeInclusive<i32>)) -> bool {
     encapsulates_another(&left, &right) || encapsulates_another(&right, &left)
 }
 
+fn check_overlap(ranges: &(RangeInclusive<i32>, RangeInclusive<i32>)) -> bool {
+    let (left, right) = ranges;
+    let start = left.start().max(right.start());
+    let end = left.end().min(right.end());
+    return end >= start;
+}
+
 fn main() {
     let data: Vec<&str> = get_data();
     let converted_data = convert_data(data);
     let result_list: Vec<bool> = converted_data
         .iter()
-        .map(|ranges| check_ranges(ranges))
+        .map(|ranges| check_overlap(ranges))
         .filter(|&x| x)
         .collect();
     println!("{}", result_list.len());
