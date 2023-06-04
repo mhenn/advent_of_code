@@ -60,6 +60,7 @@ fn apply_instructions(
         let to_idx = (to - 1) as usize;
         let len = stacks[from_idx].len().min(am);
         let mut val = stacks[from_idx].split_off(len);
+        val.reverse();
         stacks[to_idx].append(&mut val);
     }
     stacks
