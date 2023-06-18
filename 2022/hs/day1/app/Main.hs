@@ -9,7 +9,6 @@ import qualified Data.Text.Read as T (decimal)
 import qualified Data.Text as T (lines)
 import qualified Data.Text.IO as TIO
 import Data.List (sort)
-import Data.Ord (comparing)
 
 readLine :: Reader a -> Text -> Either String a
 readLine reader input = do
@@ -30,4 +29,3 @@ main = do
     content <- TIO.readFile "./res/input.txt"
     print (taskA content)
     print (taskB content)
-

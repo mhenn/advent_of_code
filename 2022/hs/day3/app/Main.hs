@@ -22,7 +22,7 @@ elemInList x y = filter(\c -> elem c y) x
 
 elemInThreeLists :: [String] -> Char
 elemInThreeLists [a,b,c] = head $ elemInList (elemInList a b) c 
-elemInThreeLists _= 'f' 
+elemInThreeLists _= '_' 
 
 taskA:: String -> Int 
 taskA = sum . map calcCharVal .  map (head) . map(\(x,y) -> elemInList x y)  . map splitHalf . lines
