@@ -28,19 +28,17 @@ class Game {
   }
 
   containsColorAmount(colorAmount: ColorAmount) {
-    return (
-      this.rounds.filter((r) => r.contains(colorAmount)).length ===
-        this.rounds.length
-    );
+    return this.rounds.every((r) => r.contains(colorAmount));
   }
 
   smallestPossible() {
     return this.rounds.reduce((acc: ColorAmount, curr: Round) => {
-      const { red, green, blue } = curr.boxes;
-      if (red > acc.red) acc.red = red;
-      if (green > acc.green) acc.green = green;
-      if (blue > acc.blue) acc.blue = blue;
-
+      Object.keys(acc).forEach((color) => {
+        const colorAmount = curr.boxes[color];
+        if (colorAmount && colorAmount > acc[color]) {
+          acc[color] = colorAmount;
+        }
+      });
       return acc;
     }, new ColorAmount());
   }
@@ -58,22 +56,17 @@ class Round {
   }
 
   contains(colorAmount: ColorAmount) {
-    const { green, red, blue } = colorAmount;
-    let ret = true;
-    const r = this.boxes["red"];
-    const g = this.boxes["green"];
-    const b = this.boxes["blue"];
-    if (r) ret = ret && r <= red;
-    if (g) ret = ret && g <= green;
-    if (b) ret = ret && b <= blue;
-    return ret;
+    return Object.keys(colorAmount).every((color) => {
+      const value = this.boxes[color];
+      return !value || value <= colorAmount[color];
+    });
   }
 }
 
 const games = input
   .split("\n")
   .map((el) => el.split(":")[1] || "")
-  .filter((e) => e !== "")
+  .filter(Boolean)
   .map((el, i) => new Game(i + 1, el.split(";")));
 
 function taskA(games: Game[]) {
