@@ -1,4 +1,4 @@
-const input = Deno.readTextFileSync("./test.txt");
+const input = Deno.readTextFileSync("./input.txt");
 
 function stringToRounds(rounds: string[]): Round[] {
   return rounds.map((e) => new Round(e.split(",")));
@@ -14,6 +14,9 @@ class ColorAmount {
     this.green = g;
     this.blue = b;
   }
+  product() {
+    return this.red * this.green * this.blue;
+  }
 }
 
 class Game {
@@ -27,13 +30,19 @@ class Game {
   containsColorAmount(colorAmount: ColorAmount) {
     return (
       this.rounds.filter((r) => r.contains(colorAmount)).length ===
-      this.rounds.length
+        this.rounds.length
     );
   }
 
   smallestPossible() {
-    return this.rounds.reduce((acc: ColorAmount, curr: Round) => {},
-    new ColorAmount());
+    return this.rounds.reduce((acc: ColorAmount, curr: Round) => {
+      const { red, green, blue } = curr.boxes;
+      if (red > acc.red) acc.red = red;
+      if (green > acc.green) acc.green = green;
+      if (blue > acc.blue) acc.blue = blue;
+
+      return acc;
+    }, new ColorAmount());
   }
 }
 
@@ -76,8 +85,13 @@ function taskA(games: Game[]) {
 }
 
 function taskB(games: Game[]) {
-  return games.reduce((acc, curr) => {}, 0);
+  return games.reduce((acc, curr) => {
+    const sP = curr.smallestPossible().product();
+    return acc + sP;
+  }, 0);
 }
 
 const ret = taskA(games);
 console.log(ret);
+const ret2 = taskB(games);
+console.log(ret2);
